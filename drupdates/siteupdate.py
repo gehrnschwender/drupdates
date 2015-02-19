@@ -6,12 +6,11 @@ class siteupdate():
 
   def __init__(self, siteName, ssh):
     self.currentDir = os.path.dirname(os.path.realpath(__file__))
-    self.settings = Settings(self.currentDir)
-    self.workingBranch = self.settings.get('workingBranch')
+    self.workingBranch = settings.get('workingBranch')
     self._siteName = siteName
-    self.siteDir = self.settings.get('workingDir') + self._siteName
-    self.upCmds = self.settings.get('upCmds')
-    self.upsCmds = self.settings.get('upsCmds')
+    self.siteDir = settings.get('workingDir') + self._siteName
+    self.upCmds = settings.get('upCmds')
+    self.upsCmds = settings.get('upsCmds')
     self.ssh = ssh
     self.utilities = utils()
 
@@ -90,15 +89,15 @@ class siteupdate():
     rebuilt = self.rebuildWebRoot()
     if not rebuilt:
       report['status'] = "The webroot re-build failed."
-      if self.settings.get('useMakeFile'):
+      if settings.get('useMakeFile'):
         makeErr = " Ensure the make file format is correct "
         makeErr += "and drush make didn't fail on a bad patch."
         report['status'] += makeErr
       return report
-    if self.settings.get('buildSource') == 'make':
+    if settings.get('buildSource') == 'make':
       shutil.rmtree(self.siteWebroot)
     gitRepo = self.gitChanges()
-    commitAuthor = self.settings.get('commitAuthor')
+    commitAuthor = settings.get('commitAuthor')
     gitRepo.commit(m=msg, author=commitAuthor)
     self.commitHash = gitRepo.rev_parse('head')
     push = gitRepo.push(self._siteName, self.workingBranch)
@@ -114,7 +113,7 @@ class siteupdate():
     file or both.
 
     """
-    if self.settings.get('useMakeFile'):
+    if settings.get('useMakeFile'):
       updatesRet = drush.call(self.upsCmds, self._siteName, True)
       updates = []
       if isinstance(updatesRet, dict):
@@ -154,7 +153,7 @@ class siteupdate():
 
     """
     makeFile = self.utilities.findMakeFile(self._siteName, self.siteDir)
-    makeFormat = self.settings.get('makeFormat')
+    makeFormat = settings.get('makeFormat')
     if makeFormat == 'make':
       f = open(makeFile)
       makef = f.read()
@@ -197,11 +196,11 @@ class siteupdate():
     """
     tempDir = tempfile.mkdtemp(self._siteName)
     shutil.move(self.siteWebroot, tempDir)
-    addDir = self.settings.get('webrootDir')
+    addDir = settings.get('webrootDir')
     if addDir:
       repository = Repo(self.siteDir)
       gitRepo = repository.git
-      if self.settings.get('useMakeFile'):
+      if settings.get('useMakeFile'):
         make = self.utilities.makeSite(self._siteName, self.siteDir)
         if not os.path.isdir(self.siteWebroot):
           print self.siteWebroot

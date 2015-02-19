@@ -7,10 +7,9 @@ class sitebuild():
 
   def __init__(self, siteName, ssh):
     self.currentDir = os.path.dirname(os.path.realpath(__file__))
-    self.settings = Settings(self.currentDir)
-    self._workingBranch = self.settings.get('workingBranch')
+    self._workingBranch = settings.get('workingBranch')
     self._siteName = siteName
-    self.siteDir = self.settings.get('workingDir') + self._siteName
+    self.siteDir = settings.get('workingDir') + self._siteName
     self.ssh = ssh
     self.dr = drush()
     self.utilities = utils()
@@ -64,7 +63,7 @@ class sitebuild():
       return False
     gitRepo = repository.git
     gitRepo.checkout('FETCH_HEAD', b=self._workingBranch)
-    if self.settings.get('useMakeFile'):
+    if settings.get('useMakeFile'):
       make = self.utilities.makeSite(self._siteName, self.siteDir)
     stCmds = ['st']
     repoStatus = drush.call(stCmds, self._siteName, True)
@@ -79,7 +78,7 @@ class sitebuild():
     if not bootstrap:
       # Re-build database if it fails go to the next repo
       ret = self.constructSite()
-    if ret and self.settings.get('importBackup'):
+    if ret and settings.get('importBackup'):
       # Import the backup file
       ret = self.importBackup()
     self.utilities.sysCommands(self, 'postBuildCmds')
@@ -100,7 +99,7 @@ class sitebuild():
       return False
     dd = drush.call(['dd', '@drupdates.' + self._siteName])
     self.siteWebroot = dd[0]
-    siFiles = self.settings.get('drushSiFiles')
+    siFiles = settings.get('drushSiFiles')
     for f in siFiles:
       os.chmod(self.siteWebroot + f, 0777)
     return True

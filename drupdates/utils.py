@@ -4,11 +4,11 @@ from drupdates.settings import *
 from drupdates.drush import *
 from os.path import expanduser
 
+settings = Settings()
 
 class utils(object):
 
   def __init__(self):
-    self.settings = Settings()
     self.aliases()
 
   @staticmethod
@@ -24,8 +24,8 @@ class utils(object):
 
   def findMakeFile(self, siteName, directory):
     """ Find the make file and test to ensure it exists. """
-    makeFormat = self.settings.get('makeFormat')
-    makeFolder = self.settings.get('makeFolder')
+    makeFormat = settings.get('makeFormat')
+    makeFolder = settings.get('makeFolder')
     makeFile = siteName + '.make'
     if makeFormat == 'yaml':
       makeFile += '.yaml'
@@ -38,7 +38,7 @@ class utils(object):
 
   def makeSite(self, siteName, siteDir):
     """ Build a webroot based on a make file. """
-    webRoot = self.settings.get('webrootDir')
+    webRoot = settings.get('webrootDir')
     folder = siteDir +'/' + webRoot
     makeFile = self.findMakeFile(siteName, siteDir)
     utils.removeDir(folder)
@@ -116,7 +116,7 @@ class utils(object):
     phase -- the phase the script is at when sysCommands is called (default "")
     object -- the object the call to sysCommand is housed within
     """
-    commands = self.settings.get(phase)
+    commands = settings.get(phase)
     if commands and type(commands) is list:
       for command in commands:
         if type(command) is list:
@@ -149,7 +149,7 @@ class utils(object):
     """
 
     ret = False
-    aliasFileName = self.settings.get('drushAliasFile')
+    aliasFileName = settings.get('drushAliasFile')
     drushFolder = expanduser('~') + '/.drush'
     drushFile = drushFolder + "/" + aliasFileName
     if os.path.isfile(drushFile):
@@ -199,7 +199,7 @@ class utils(object):
     Iterate over the sites directory and delete any files/folders not in the
     commonIgnore setting.
     """
-    ignore = self.settings.get('commonIgnore')
+    ignore = settings.get('commonIgnore')
     if isinstance(ignore, str):
       ignore = [ignore]
     dcmp = dircmp(dirDelete, dirCompare, ignore)

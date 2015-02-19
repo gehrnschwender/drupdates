@@ -6,8 +6,7 @@ class datastores(Plugin):
   def __init__(self):
     # load the Plugin _plugins property
     Plugin.__init__(self)
-    self.settings = Settings()
-    self._tool = self.settings.get('datastore').lower()
+    self._tool = settings.get('datastore').lower()
     self._plugin = self._tool
     self._instance = ""
 

@@ -6,9 +6,6 @@ from drupdates.utils import *
 
 class drush(Settings):
 
-  def __init__(self):
-    self.settings = Settings()
-
   @staticmethod
   def call(commands, alias = '', jsonRet = False):
     """ Run a drush comand and return a list/dictionary of the results.
@@ -48,8 +45,8 @@ class drush(Settings):
     alias -- A Drush alias
 
     """
-    workingDir = self.settings.get('workingDir')
-    backportDir = self.settings.get('backupDir')
+    workingDir = settings.get('workingDir')
+    backportDir = settings.get('backupDir')
     if os.path.isfile(backportDir + alias + '.sql'):
       commands = ['drush', '@drupdates.' + alias, 'sqlc']
       popen = subprocess.Popen(commands, stdin=subprocess.PIPE, stderr=subprocess.PIPE)

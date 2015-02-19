@@ -6,7 +6,6 @@ from drupdates.sitebuild import *
 from drupdates.siteupdate import *
 
 def main():
-  settings = Settings()
   report = {}
   sites = repos().get()
   pmTool = pmtools()

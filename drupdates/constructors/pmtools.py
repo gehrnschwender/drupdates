@@ -5,8 +5,7 @@ class pmtools(Plugin):
 
   def __init__(self):
     Plugin.__init__(self)
-    self.settings = Settings()
-    self._tool = self.settings.get('pmName').lower()
+    self._tool = settings.get('pmName').lower()
     self._plugin = self._tool
     self._instance = ""
 
@@ -59,8 +58,8 @@ class pmtools(Plugin):
 
   def deployTicket(self, site, commitHash):
     description = self.description(site, commitHash)
-    environments = self.settings.get('deploymentTickets')
-    self._targetDate = self.settings.get('targetDate')
+    environments = settings.get('deploymentTickets')
+    self._targetDate = settings.get('targetDate')
     return self._instance.submitDeployTicket(site, environments, description, self._targetDate)
 
 class pmTool(object):
