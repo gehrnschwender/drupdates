@@ -1,6 +1,5 @@
 import distutils.core, tempfile, os, git, shutil, copy
 from drupdates.utils import *
-from drupdates.drush import *
 from git import *
 
 class siteupdate():
